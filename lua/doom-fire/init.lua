@@ -11,7 +11,7 @@ local function draw(buffer, w, h)
 	local lines = {}
 	local hl_colors = {}
 	for y = 0, h do
-		local row = string.rep("", w)
+		local row = ""
 		for x = 0, w do
 			local idx = y * w + x
 			local below = idx + w
