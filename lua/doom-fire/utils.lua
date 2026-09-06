@@ -8,4 +8,12 @@ M.setInterval = function(interval, callback)
 	return timer
 end
 
+M.init_buf = function(width, height, val)
+	local buf = {}
+	for i = 0, width * height do
+		buf[i] = val
+	end
+	return buf
+end
+
 return M
