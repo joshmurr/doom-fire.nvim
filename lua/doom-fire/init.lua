@@ -3,7 +3,7 @@ local utils = require("doom-fire.utils")
 
 local M = {}
 
-local default_opts = { show_color_vals = false }
+local default_opts = { show_color_vals = false, width_scale = 0.5, height_scale = 0.5 }
 local namespace = vim.api.nvim_create_namespace("doom")
 
 local function do_fire(w, h, output_buf)
@@ -62,8 +62,8 @@ end
 function M.run()
 	local buffer = vim.api.nvim_create_buf(false, true)
 	local x_scale = M.options.show_color_vals and 2 or 1
-	local width = math.floor(vim.o.columns * 0.5 / x_scale)
-	local height = math.floor(vim.o.lines * 0.5)
+	local width = math.floor(vim.o.columns * M.options.width_scale / x_scale)
+	local height = math.floor(vim.o.lines * M.options.height_scale)
 	local pix_buf = utils.init_buf(width, height, 36)
 
 	local timer = utils.setInterval(100, function()
