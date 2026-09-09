@@ -11,5 +11,4 @@ opts = {
     width_scale = 0.5,
     height_scale = 0.5,
 }
-``
 ```
