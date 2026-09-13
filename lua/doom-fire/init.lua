@@ -8,9 +8,8 @@ local namespace = vim.api.nvim_create_namespace("doom")
 
 local function do_fire(w, h, output_buf)
 	local lines = {}
-	local hl_colors = {}
 	for y = 0, h do
-		local row = ""
+		local row = {}
 		for x = 0, w do
 			local idx = y * w + x
 			local below = idx + w
@@ -18,45 +17,27 @@ local function do_fire(w, h, output_buf)
 			local below_val = below >= w * h and 36 or output_buf[below]
 
 			output_buf[idx - decay] = math.max(below_val - decay, 0)
-			hl_colors[idx] = "Doom" .. output_buf[idx - decay] + 1
+			local color = "Doom" .. output_buf[idx - decay] + 1
+			local char = M.options.show_color_vals and string.format("%02d", output_buf[idx - decay]) or " "
 
-			if M.options.show_color_vals then
-				row = row .. string.format("%02d", output_buf[idx - decay])
-			else
-				row = row .. "  "
-			end
+			table.insert(row, { char, color })
 		end
 		table.insert(lines, row)
 	end
 
-	return {
-		lines = lines,
-		hl_colors = hl_colors,
-	}
+	return lines
 end
 
 local function draw(buffer, w, h, output_buf)
-	local r = do_fire(w, h, output_buf)
-	local lines = r.lines
-	local hl_colors = r.hl_colors
+	local lines = do_fire(w, h, output_buf)
 
-	vim.api.nvim_buf_set_lines(buffer, 0, -1, false, lines)
+	-- vim.api.nvim_buf_set_lines(buffer, 0, -1, false, lines)
 	vim.api.nvim_buf_clear_namespace(buffer, namespace, 0, -1)
 
-	local x_scale = M.options.show_color_vals and 2 or 1
-
-	for y = 0, h do
-		local row = lines[y + 1]
-		local cell_count = math.floor(#row / x_scale)
-		for x = 0, cell_count - 1 do
-			local idx = y * w + x
-			local col = x * x_scale
-			vim.api.nvim_buf_set_extmark(buffer, namespace, y, col, {
-				end_col = col + x_scale,
-				hl_group = hl_colors[idx],
-			})
-		end
-	end
+	vim.api.nvim_buf_set_extmark(buffer, namespace, 0, -1, {
+		virt_lines = lines,
+		virt_text_pos = "overlay",
+	})
 end
 
 function M.run()
