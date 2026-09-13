@@ -51,6 +51,8 @@ function M.run()
 		return y >= height and 36 or 0
 	end)
 
+	draw(buffer, width, height, pix_buf)
+
 	local timer = utils.setInterval(100, function()
 		vim.schedule(function()
 			draw(buffer, width, height, pix_buf)
