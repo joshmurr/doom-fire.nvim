@@ -30,13 +30,14 @@ end
 
 local function draw(buffer, w, h, output_buf)
 	local lines = do_fire(w, h, output_buf)
+	local first_row = table.remove(lines, 1)
 
-	-- vim.api.nvim_buf_set_lines(buffer, 0, -1, false, lines)
 	vim.api.nvim_buf_clear_namespace(buffer, namespace, 0, -1)
 
-	vim.api.nvim_buf_set_extmark(buffer, namespace, 0, -1, {
-		virt_lines = lines,
+	vim.api.nvim_buf_set_extmark(buffer, namespace, 0, 0, {
+		virt_text = first_row,
 		virt_text_pos = "overlay",
+		virt_lines = lines,
 	})
 end
 
