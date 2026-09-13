@@ -46,7 +46,10 @@ function M.run()
 	local x_scale = M.options.show_color_vals and 2 or 1
 	local width = math.floor(vim.o.columns * M.options.width_scale / x_scale)
 	local height = math.floor(vim.o.lines * M.options.height_scale)
-	local pix_buf = utils.init_buf(width, height, 36)
+	local pix_buf = utils.init_buf(width, height, function(i)
+		local y = math.floor(i / width)
+		return y >= height and 36 or 0
+	end)
 
 	local timer = utils.setInterval(100, function()
 		vim.schedule(function()
